@@ -1,0 +1,107 @@
+1. Install MySQL
+
+
+2. Create a new DB 
+
+   create database test;
+
+
+  Create Device table in Test DB
+
+CREATE TABLE test.DEVICE (
+    device_id INT AUTO_INCREMENT PRIMARY KEY,
+    hit_count INT default 0,
+    os_name VARCHAR(255) NOT NULL  default "",
+    os_version VARCHAR(255) NOT NULL default "",
+    browser_name VARCHAR(255) NOT NULL  default "",
+    browser_version VARCHAR(255) NOT NULL  default "",   
+    status ENUM('active', 'inactive') DEFAULT 'active'
+);
+  
+  
+
+2. Configure MySQL properties in Springboot Application.properties file with your installed mysql for the following properties.
+
+spring.datasource.url=jdbc:mysql://localhost:3306/test?useSSL=false&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=password
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+3. Start the application
+
+4. Test the 4 endpoints using postman
+
+    A.  Get By Operating System Name
+
+    URL : http://localhost:8080/devices/getByOsName?osName=Windows
+    Method : GET
+    Sample Output
+
+  [
+    {
+        "deviceId": 1,
+        "hitCount": 5,
+        "osName": "Windows",
+        "osVersion": "10.0",
+        "browserName": "Chrome",
+        "browserVersion": "87.0.4280.66"
+    },
+    {
+        "deviceId": 8,
+        "hitCount": 1,
+        "osName": "Windows",
+        "osVersion": "10.0",
+        "browserName": "Firefox",
+        "browserVersion": "119.0"
+    }
+]
+
+     B. Get By Device ID
+     URL : http://localhost:8080/devices/7
+     Method : GET
+    Sample output 
+ 
+    {
+    "deviceId": 7,
+    "hitCount": 1,
+    "osName": "OS X",
+    "osVersion": "10.15.7",
+    "browserName": "Chrome",
+    "browserVersion": "119.0.0.0"
+    }
+
+    
+  
+	
+  C. Delete By ID 
+   
+  URL : http://localhost:8080/devices/5
+  Method: Delete
+  Sample output
+  Deleted
+   
+  
+
+  D. Match existing device or create new device
+
+  URL : http://localhost:8080/devices/matchDevice
+  Method : POST
+  Input as part of body 
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36"
+
+  Sample Output
+
+  {
+    "deviceId": 1,
+    "hitCount": 5,
+    "osName": "Windows",
+    "osVersion": "10.0",
+    "browserName": "Chrome",
+    "browserVersion": "87.0.4280.66"
+}
+  
+   
+Note : if device exists , it will just increase the hitcount of the device otherwise it will create a new device
+       Device ID is auto incremented
+
+
